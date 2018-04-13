@@ -14,12 +14,11 @@ f omega (x,o) = (x_2,o_2)
     x_2 =  x + cmap (*dt) omega + cmap (\x -> dt * k * fst(polar o) * sin (snd(polar o)-x)) x
     o_2 = order x_2
 
-
-
 main = do
   let x = fromList [0,1,0]::Vector R
   let v = fromList [-1,0,1]::Vector R
   let o = order x
-  
-  print (f v (x,o))
+  let g = f v :: ((Vector R,C) -> (Vector R,C))
+  let r = fst . polar .snd 
+  print$(r .  g) (x,o)
 
