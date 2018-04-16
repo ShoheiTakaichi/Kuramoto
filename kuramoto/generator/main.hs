@@ -38,6 +38,6 @@ main = do
   let (a,b) = make_data (v,x) 10000:: (Matrix R,Vector C)
   let b_r = map realPart (toList b)
   let b_c = map imagPart (toList b)
-  print (order x)
+  print (size b)
   plotList [PNG "test.png"] b_r
 
