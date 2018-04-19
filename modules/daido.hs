@@ -1,5 +1,5 @@
 
-module Kuramoto (
+module DAIDO (
   order,
   makeData,
   lorentz,
@@ -26,19 +26,21 @@ order ::(Vector R -> C)
 order x = sum(fmap (\x->cos x :+ sin x) (toList x))/(fromIntegral (size x))
 
 --1 step後の計算
-f::((R,R) -> Vector R -> Vector R -> Vector R)
-f (k,dt) v x = x_2
+f::((R,R,R) -> Vector R -> Vector R -> Vector R)
+f (k,h,dt) v x = cmap modPi x_2
   where
-    o = order x
-    x_2 = cmap modPi (x + cmap (*dt) v + cmap (\x -> dt * k * fst(polar o) * sin (snd(polar o)-x)) x)
+    g a b = (sin (a-b)) + (sin (2*a-2*b))
+    n = 1 / toEnum (size x)::R
+    interaction x = (cmap (\z ->n * k * norm_1 (cmap (g z) x)) x)
+    x_2 = x + cmap (*dt) v + (interaction x)
 
 
 --時系列のmatrix生成
-makeData::(R,R) -> (Vector R,Vector R) -> Int -> (Matrix R,Vector C)
+makeData::(R,R,R) -> (Vector R,Vector R) -> Int -> (Matrix R,Vector C)
 
-makeData (k,dt) (v,x_0) l = (fromColumns (take l phi),psi)
+makeData (k,h,dt) (v,x_0) l = (fromColumns (take l phi),psi)
   where
-    phi = x_0 : map (f (k,dt) v) phi
+    phi = x_0 : map (f (k,h,dt) v) phi
     psi = fromList (map order (take l phi))
 
 
