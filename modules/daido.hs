@@ -29,8 +29,9 @@ order x = sum(fmap (\x->cos x :+ sin x) (toList x))/(fromIntegral (size x))
 f::((R,R,R) -> Vector R -> Vector R -> Vector R)
 f (k,h,dt) v x = cmap modPi x_2
   where
-    g a b = (sin (a-b)) + (sin (2*a-2*b))
+    g a b = (sin (a-b)) + h * (sin (2*a-2*b))
     n = 1 / toEnum (size x)::R
+    interaction::Vector R -> Vector R
     interaction x = (cmap (\z ->n * k * norm_1 (cmap (g z) x)) x)
     x_2 = x + cmap (*dt) v + (interaction x)
 
