@@ -10,15 +10,15 @@ import Numeric.LinearAlgebra
 
 
 -- (v_1 v_2,,,,) という横方向に発展する時系列
-dmd :: Matrix C -> IO ((Vector C, Matrix C))
-dmd v = do
-  let v1 = subMatrix (0,0) ((fst$size v),(snd$size v)-1) v
-  let v2 = subMatrix (0,1) ((fst$size v),(snd$size v)-1) v
-  let (u,sigma,w) = compactSVDTol 0.1 v1 --特異値の打ち切り値、多分
-  let s = (tr u) <> v2 <> w <> (complex (diagRect 0 (1/sigma) (snd$size w) (snd$size u)))::Matrix C
+dmd :: Matrix C -> (Vector C, Matrix C)
+dmd v = (labmda, u <> phi)
+  where
+  v1 = subMatrix (0,0) ((fst$size v),(snd$size v)-1) v
+  v2 = subMatrix (0,1) ((fst$size v),(snd$size v)-1) v
+  (u,sigma,w) = compactSVDTol 0.001 v1 --特異値の打ち切り値、多分
+  s = (tr u) <> v2 <> w <> (complex (diagRect 0 (1/sigma) (snd$size w) (snd$size u)))::Matrix C
   --print s
-  let (labmda,phi) = eig s :: (Vector C,Matrix C)
-  return (labmda, u <> phi)
+  (labmda,phi) = eig s :: (Vector C,Matrix C)
 
 initial_energy::Matrix C -> Matrix C -> Vector C
 initial_energy v phi = (pinv phi) #> (v #> fromList ([1]++replicate (snd (size v)-1) 0))
