@@ -8,6 +8,14 @@ import Numeric.LinearAlgebra
 
 --dmd
 
+customSVD :: Field t => Int -> Matrix t -> (Matrix t, Vector Double, Matrix t)
+customSVD dim a = (subU,subS,subV)
+  where
+  (u,s,v) = compactSVD a
+  subU = subMatrix (0,0) (rows u,dim) u
+  subS = subVector 0 dim s
+  subV = subMatrix (0,0) (rows v,dim) v
+
 
 -- (v_1 v_2,,,,) という横方向に発展する時系列
 dmd :: Matrix C -> (Vector C, Matrix C)
@@ -15,7 +23,7 @@ dmd v = (labmda, u <> phi)
   where
   v1 = subMatrix (0,0) ((fst$size v),(snd$size v)-1) v
   v2 = subMatrix (0,1) ((fst$size v),(snd$size v)-1) v
-  (u,sigma,w) = compactSVDTol 0.001 v1 --特異値の打ち切り値、多分
+  (u,sigma,w) = customSVD 4 v1 --特異値の打ち切り値、多分
   s = (tr u) <> v2 <> w <> (complex (diagRect 0 (1/sigma) (snd$size w) (snd$size u)))::Matrix C
   --print s
   (labmda,phi) = eig s :: (Vector C,Matrix C)
