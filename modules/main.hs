@@ -9,9 +9,9 @@ import CustomPlot
 main = do
   let n = 1000 :: Int
   let v = fromList (lorentz 2.0 n)::Vector R
-  --let x = fromList (linearScale (toInteger n-1) (-pi,pi)) :: Vector R
-  let x = fromList (replicate n 0)::Vector R
-  let (k,dt)=(0.00,0.0005)
+  let x = fromList (linearScale (toInteger n-1) (-pi,pi)) :: Vector R
+  --let x = fromList (replicate n 0)::Vector R
+  let (k,dt)=(16.00,0.0001)
   let (a,b) = makeData (k,dt) (v,x) 10000:: (Matrix R,Vector C)
   let rho = phaseDensity 100 a
   let (lam,mode) = (dmd ( toComplex (rho,rho*0)))::(Vector C,Matrix C)

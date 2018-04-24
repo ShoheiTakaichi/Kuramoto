@@ -87,7 +87,7 @@ plotOrder r dt = do
   --size = [Aspect (Ratio 0.7)]--グラフの形　縦/横
   let font = [tics,xlavel,ylavel,keyFont,titleFont]
   --xformat = [XFormat "%.1P{/Symbol p}"]
-  let attribute = (save++key++label++title++font)--fontは後述
+  let attribute = (save++key++label++title++font++[YRange (0,1)])--fontは後述
   plotPath attribute z
  
 
