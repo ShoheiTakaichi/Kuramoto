@@ -6,6 +6,7 @@ module CustomPlot (
 
 import Graphics.Gnuplot.Simple
 import Numeric.LinearAlgebra
+import Text.Printf
 
 --z::[[(Double,Double)]] legend::[String]
 phaseDensePlot z titleName file = plotPath atribute z
@@ -51,20 +52,22 @@ costumPlotPaths z legend = plotPathsStyle atribute plotstyle
 
 
  --例
-plotMode::(Matrix C -> Vector C -> Int -> IO())
+plotMode::(Matrix C -> Vector R -> Int -> IO())
 plotMode mode l n
   |n==0 = do
     let rho = toList ((toColumns (fst (fromComplex mode)))!!n)++toList ((toColumns (fst (fromComplex mode)))!!n)
     let phi = linearScale (toInteger(length rho)-1) (-2*pi,2*pi)
     let z = zip phi rho
-    let title = "{/Symbol l}"++(show n)
+    let lam = printf "%0.4f" ((toList l)!!n)::String
+    let title = "{/Symbol l}="++lam
     let file = "mode/mode"++(show n)
     phaseDensePlot z title file
   |otherwise = do
     let rho = toList ((toColumns (fst (fromComplex mode)))!!n)++toList ((toColumns (fst (fromComplex mode)))!!n)
     let phi = linearScale (toInteger(length rho)-1) (-2*pi,2*pi)
     let z = zip phi rho
-    let title = "{/Symbol l}="++(show n)
+    let lam = printf "%0.4f" ((toList l)!!n)::String
+    let title = "{/Symbol l}="++lam 
     let file = "mode/mode"++(show n)
     phaseDensePlot z title file
     plotMode mode l (n-1)
@@ -87,7 +90,7 @@ plotOrder r dt = do
   --size = [Aspect (Ratio 0.7)]--グラフの形　縦/横
   let font = [tics,xlavel,ylavel,keyFont,titleFont]
   --xformat = [XFormat "%.1P{/Symbol p}"]
-  let attribute = (save++key++label++title++font++[YRange (0,1)])--fontは後述
+  let attribute = (save++label++font++[YRange (0,1)]++key++title)--fontは後述
   plotPath attribute z
  
 
