@@ -1,6 +1,6 @@
 module DMD(
 dmd,
-initial_energy
+initialEnergy
 )where
 
 
@@ -29,8 +29,8 @@ dmd v = (labmda, u <> phi)
   --print s
   (labmda,phi) = eig s :: (Vector C,Matrix C)
 
-initial_energy::Matrix C -> Matrix C -> Vector C
-initial_energy v phi = (pinv phi) #> (v #> fromList ([1]++replicate (snd (size v)-1) 0))
+initialEnergy::Matrix C -> Matrix C -> Vector C
+initialEnergy v phi = (pinv phi) #> (v #> fromList ([1]++replicate (snd (size v)-1) 0))
 
 --initial_energy::Vector C -> Matrix C -> Vector C
 --initial_energy2 v phi = (pinv phi) #> v
