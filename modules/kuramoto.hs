@@ -52,11 +52,9 @@ phaseDensity m phase = rho
     chi_i::Int -> R -> R
     chi_i i x = if (toEnum i)/(toEnum m) <= (x+pi)/(2.0*pi) && (x+pi)/(2.0*pi) < (toEnum (i+1))/(toEnum m) then 1.0 else 0.0
     chi :: Vector R -> Vector R
-    chi x = fromList [y/toEnum (size x) | i <- [0..(m-1)],let y = norm_1 (cmap (chi_i i) x) - 1.0/(toEnum m)] :: Vector R
+    chi x = fromList [y/toEnum (size x) | i <- [0..(m-1)],let y = norm_1 (cmap (chi_i i) x) - 0.0/(toEnum m)] :: Vector R
     rho = fromColumns (map chi (toColumns phase)) :: Matrix R
-
-
-{-}
+{-
 main = do
   let n = 10 :: Int
   let v = fromList (lorentz 2.0 n)::Vector R
@@ -68,21 +66,6 @@ main = do
   print (phaseDensity 5 a)
   plotList [PNG "test.png"] b_r
 -}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

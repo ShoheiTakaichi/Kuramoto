@@ -23,7 +23,7 @@ dmd v = (labmda, u <> phi)
   where
   v1 = subMatrix (0,0) ((fst$size v),(snd$size v)-1) v
   v2 = subMatrix (0,1) ((fst$size v),(snd$size v)-1) v
-  (u,sigma,w) = customSVD 32 v1 --特異値の打ち切り値、多分
+  (u,sigma,w) = customSVD 8 v1 --特異値の打ち切り値、多分
   --(u,sigma,w) = compactSVD v1
   s = (tr u) <> v2 <> w <> (complex (diagRect 0 (1/sigma) (snd$size w) (snd$size u)))::Matrix C
   --print s
