@@ -5,6 +5,7 @@ import Fourier
 --import Daido
 import DMD
 import CustomPlot
+import Control.Parallel.Strategies
 
 main = do
   let n = 1000 :: Int
@@ -12,7 +13,7 @@ main = do
   --let x = fromList (linearScale (toInteger n-1) (-pi,pi)) :: Vector R
   let x = fromList (replicate n 0)::Vector R
   let (k,dt)=(0.50,0.00050)
-  let (a,b) = makeData (k,dt) (v,x) 10000:: (Matrix R,Vector C)
+  let (a,b) = parMakeData (k,dt) (v,x) 10000:: (Matrix R,Vector C)
   let rho = phaseDensity 100 a
   let (lam,mode) = (dmd ( toComplex (rho,rho*0)))::(Vector C,Matrix C)
   --let energy = (fst . fromComplex) (initialEnergy x mode)

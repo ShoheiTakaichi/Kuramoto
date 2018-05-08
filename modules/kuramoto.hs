@@ -2,6 +2,7 @@
 module Kuramoto (
   order,
   makeData,
+  parMakeData,
   lorentz,
   phaseDensity
 )where
@@ -16,6 +17,7 @@ module Kuramoto (
 
 import Numeric.LinearAlgebra
 --import Graphics.Gnuplot.Simple
+import Control.Parallel.Strategies
 
 
 modPi :: R -> R
@@ -32,6 +34,15 @@ f (k,dt) v x = x_2
     o = order x
     x_2 = cmap modPi (x + cmap (*dt) v + cmap (\x -> dt * k * fst(polar o) * sin (snd(polar o)-x)) x)
 
+parCmap func vec = fromList$parMap rpar func (toList vec)
+
+
+parF::((R,R) -> Vector R -> Vector R -> Vector R)
+parF (k,dt) v x = x_2
+  where
+    o = order x
+    x_2 = parCmap modPi (x + parCmap (*dt) v + parCmap (\x -> dt * k * fst(polar o) * sin (snd(polar o)-x)) x)
+
 
 --時系列のmatrix生成
 makeData::(R,R) -> (Vector R,Vector R) -> Int -> (Matrix R,Vector C)
@@ -41,6 +52,10 @@ makeData (k,dt) (v,x_0) l = (fromColumns (take l phi),psi)
     phi = x_0 : map (f (k,dt) v) phi
     psi = fromList (map order (take l phi))
 
+parMakeData (k,dt) (v,x_0) l = (fromColumns (take l phi),psi)
+  where
+    phi = x_0 : map (parF (k,dt) v) phi
+    psi = fromList (parMap rpar order (take l phi))
 
 lorentz::Double -> Int -> [R]
 lorentz gamma n = [gamma * tan (pi*x) | p <- [1..n],let x = (toEnum p)/(toEnum n+1)-0.5 :: R]

@@ -15,8 +15,9 @@ oneOp k = ((sort . toList) (cmap (\x-> (log . realPart . abs) x / dt) lam))
   v = fromList (lorentz 1.0 n)::Vector R
   --let x = fromList (linearScale (toInteger n-1) (-pi,pi)) :: Vector R
   x = fromList (replicate n 0)::Vector R
-  dt= 0.00050
-  (a,b) = makeData (k,dt) (v,x) 10000:: (Matrix R,Vector C)
+  dt= 0.0050
+  h = -0.5
+  (a,b) = makeData (k,dt) (v,x) 500:: (Matrix R,Vector C)
   rho = phaseDensity 100 a
   c = [cmap abs x | i <-[0..7],let x = subVector i (size b-8) b]
   delay = fromRows c
@@ -29,10 +30,11 @@ main = do
   let lams = (\x -> map toList ((toRows . fromColumns) (map fromList x))) (parMap rpar oneOp ks)
   --let lams = (map oneOp ks)
   let emb = map (\x -> (x -2.0)/2.0) ks
-  let line1 = map (\x -> zip ks (lams!!x)) [0..2]
+  let line1 = map (\x -> zip ks (lams!!x)) [0..7]
   let line2 = zip ks emb
   let save = [EPS "test.eps",Custom "terminal" ["eps","enhanced","color"],Custom "bmargin" ["4"],Key Nothing]
  
-  plotPaths save (line1++[line2])
+  --plotPaths save (line1 ++ [line2])
+  plotPaths [Key Nothing] (line1 ++ [line2])
   --plotList [PNG "eig.png"] lams
  

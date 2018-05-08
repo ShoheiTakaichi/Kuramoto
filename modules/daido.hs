@@ -2,6 +2,7 @@
 module Daido (
   order,
   makeData,
+  parMakeData,
   lorentz,
   phaseDensity
 )where
@@ -16,6 +17,7 @@ module Daido (
 
 import Numeric.LinearAlgebra
 --import Graphics.Gnuplot.Simple
+import Control.Parallel.Strategies
 
 
 modPi :: R -> R
@@ -24,6 +26,8 @@ modPi x = snd (polar(cos x :+ sin x)) -- [-pi.pi]に写像
 --order parameter の計算
 order ::(Vector R -> C)
 order x = sum(fmap (\x->cos x :+ sin x) (toList x))/(fromIntegral (size x))
+
+parCmap func vec = fromList$parMap rpar func (toList vec)
 
 --1 step後の計算
 f::((R,R,R) -> Vector R -> Vector R -> Vector R)
@@ -35,6 +39,15 @@ f (k,h,dt) v x = cmap modPi x_2
     interaction x = (cmap (\z ->n * k * norm_1 (cmap (g z) x)) x)
     x_2 = x + cmap (*dt) v + (interaction x)
 
+parF::((R,R,R) -> Vector R -> Vector R -> Vector R)
+parF (k,h,dt) v x = parCmap modPi x_2
+  where
+    g a b = (sin (a-b)) + h * (sin (2*a-2*b))
+    n = 1 / toEnum (size x)::R
+    interaction::Vector R -> Vector R
+    interaction x = (parCmap (\z ->n * k * norm_1 (cmap (g z) x)) x)
+    x_2 = x + parCmap (*dt) v + (interaction x)
+
 
 --時系列のmatrix生成
 makeData::(R,R,R) -> (Vector R,Vector R) -> Int -> (Matrix R,Vector C)
@@ -43,6 +56,14 @@ makeData (k,h,dt) (v,x_0) l = (fromColumns (take l phi),psi)
   where
     phi = x_0 : map (f (k,h,dt) v) phi
     psi = fromList (map order (take l phi))
+
+parMakeData::(R,R,R) -> (Vector R,Vector R) -> Int -> (Matrix R,Vector C)
+
+parMakeData (k,h,dt) (v,x_0) l = (fromColumns (take l phi),psi)
+  where
+    phi = x_0 : map (parF (k,h,dt) v) phi
+    psi = fromList (parMap rpar order (take l phi))
+
 
 
 lorentz::Double -> Int -> [R]
@@ -71,19 +92,6 @@ main = do
   print (phaseDensity 5 a)
   plotList [PNG "test.png"] b_r
 -}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
