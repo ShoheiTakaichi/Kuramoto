@@ -12,9 +12,9 @@ main = do
   let v = fromList (lorentz 1.0 n)::Vector R
   --let x = fromList (linearScale (toInteger n-1) (-pi,pi)) :: Vector R
   let x = fromList (replicate n 0)::Vector R
-  let (k,dt)=(0.50,0.00050)
-  let (a,b) = parMakeData (k,dt) (v,x) 10000:: (Matrix R,Vector C)
-  let rho = phaseDensity 100 a
+  let (k,dt)=(1.60,0.00050)
+  let (a,b) = parMakeData (k,dt) (v,x) 5000:: (Matrix R,Vector C)
+  let rho = phaseDensity 200 a
   let (lam,mode) = (dmd ( toComplex (rho,rho*0)))::(Vector C,Matrix C)
   --let energy = (fst . fromComplex) (initialEnergy x mode)
   --saveMatrix "energy.txt" "%lf" (fromColumns [energy])
