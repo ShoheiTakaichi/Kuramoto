@@ -1,4 +1,5 @@
-import Kuramoto
+--import Kuramoto
+import Daido
 import CustomPlot
 import Numeric.LinearAlgebra
 import Control.Parallel.Strategies
@@ -12,7 +13,7 @@ bif k = y
   --x = fromList (linearScale (toInteger n-1) (-pi,pi)) :: Vector R
   x = fromList (replicate n 0)::Vector R
   dt=0.0020
-  (a,b) = makeData (k,dt) (v,x) 20000:: (Matrix R,Vector C)
+  (a,b) = parMakeData (k,-0.5,dt) (v,x) 20000:: (Matrix R,Vector C)
   y = (realPart . abs) ((toList b)!!(size b -1))
 
 
