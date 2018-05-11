@@ -1,20 +1,20 @@
 import Numeric.LinearAlgebra
 import Graphics.Gnuplot.Simple
---import Kuramoto
+import Kuramoto
 import Fourier
-import Daido
+--import Daido
 import DMD
 import CustomPlot
 import Control.Parallel.Strategies
 
 main = do
-  let n = 500 :: Int
+  let n = 10000 :: Int
   let v = fromList (lorentz 1.0 n)::Vector R
   --let x = fromList (linearScale (toInteger n-1) (-pi,pi)) :: Vector R
   let x = fromList (replicate n 0)::Vector R
-  let (k,dt)=(1.60,0.0050)
-  let (a,b) = parMakeData (k,-0.5,dt) (v,x) 1000:: (Matrix R,Vector C)
-  let rho = phaseDensity 250 a
+  let (k,dt)=(1.60,0.00050)
+  let (a,b) = parMakeData (k,dt) (v,x) 10000:: (Matrix R,Vector C)
+  let rho = phaseDensity 500 a
   let (lam,mode) = (dmd ( toComplex (rho,rho*0)))::(Vector C,Matrix C)
   --let energy = (fst . fromComplex) (initialEnergy x mode)
   --saveMatrix "energy.txt" "%lf" (fromColumns [energy])
