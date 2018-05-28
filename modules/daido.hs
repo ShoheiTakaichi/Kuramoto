@@ -37,7 +37,7 @@ f (k,h,dt) v x = cmap modPi x_2
     n = 1 / toEnum (size x)::R
     interaction::Vector R -> Vector R
     interaction x = (cmap (\z ->n * k * (sum . toList) (cmap (g z) x)) x)
-    x_2 = x + cmap (*dt) v + (interaction x)
+    x_2 = x + cmap (*dt) (v + interaction x)
 
 parF::((R,R,R) -> Vector R -> Vector R -> Vector R)
 parF (k,h,dt) v x = parCmap modPi x_2
@@ -46,7 +46,7 @@ parF (k,h,dt) v x = parCmap modPi x_2
     n = 1 / toEnum (size x)::R
     interaction::Vector R -> Vector R
     interaction x = (parCmap (\z ->n * k * (sum . toList) (cmap (g z) x)) x)
-    x_2 = x + parCmap (*dt) v + (interaction x)
+    x_2 = x + parCmap (*dt) (v + interaction x)
 
 
 --時系列のmatrix生成
