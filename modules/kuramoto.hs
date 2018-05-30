@@ -4,7 +4,8 @@ module Kuramoto (
   makeData,
   parMakeData,
   lorentz,
-  phaseDensity
+  phaseDensity,
+  sindis
 )where
 
 {-
@@ -60,6 +61,7 @@ parMakeData (k,dt) (v,x_0) l = (fromColumns (take l phi),psi)
 lorentz::Double -> Int -> [R]
 lorentz gamma n = [gamma * tan (pi*x) | p <- [1..n],let x = (toEnum p)/(toEnum n+1)-0.5 :: R]
 
+sindis n = [2*asin(2*x-1) | p <-[1..n], let x = (toEnum p)/(toEnum n+1)::R ]
 
 phaseDensity :: Int -> Matrix R -> Matrix R
 phaseDensity m phase = rho

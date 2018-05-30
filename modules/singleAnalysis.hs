@@ -8,13 +8,14 @@ import CustomPlot
 import Control.Parallel.Strategies
 
 main = do
-  let n = 500000 :: Int
-  let v = fromList (lorentz 1.0 n)::Vector R
+  let n = 10000 :: Int
+  let v = fromList (lorentz 2.0 n)::Vector R
+  --let v = fromList (sindis n)::Vector R
   --let x = fromList (linearScale (toInteger n-1) (-pi,pi)) :: Vector R
   let x = fromList (replicate n 0)::Vector R
-  let (k,dt)=(1.60,0.00005)
-  let (a,b) = parMakeData (k,dt) (v,x) 100000:: (Matrix R,Vector C)
-  let rho = phaseDensity 5000 a
+  let (k,dt)=(3.50,0.0005)
+  let (a,b) = parMakeData (k,dt) (v,x) 10000:: (Matrix R,Vector C)
+  let rho = phaseDensity 500 a
   let (lam,mode) = (dmd ( toComplex (rho,rho*0)))::(Vector C,Matrix C)
   --let energy = (fst . fromComplex) (initialEnergy x mode)
   --saveMatrix "energy.txt" "%lf" (fromColumns [energy])
